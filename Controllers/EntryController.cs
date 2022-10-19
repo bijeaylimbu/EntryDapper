@@ -17,17 +17,16 @@ namespace TransactionEntry.Controllers
         }
          [HttpPost("entry")]
         public async Task<int> CreateEntry(EntryRequest request)
-        {
-            try
-            {
-                var entry = await _repository.CreateEntry(request);
+        { 
+            var entry = await _repository.CreateEntry(request);
                 return entry  ;
+        }
 
-            }
-            catch (Exception e)
-            {
-                throw new Exception("something went wrong");
-            }
+        [HttpPost("debit-or-credit")]
+        public async Task<int> EnterCreditOrDebitAmount(DebitOrCreditRequest request)
+        {
+            var entry = await _repository.EnterDebitOrCredit(request);
+            return entry;
         }
     }
 }

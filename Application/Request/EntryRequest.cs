@@ -8,5 +8,6 @@ namespace TransactionEntry.Application.Request
         public double Debit { get; set; }
         public double Credit { get; set; }
         public  DateTime  CreatedDate { get; set; }
+        
     }
 }

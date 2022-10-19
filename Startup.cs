@@ -31,6 +31,9 @@ namespace TransactionEntry
         {
             services.AddSingleton<TransactionEntryDBContext>();
             services.AddScoped<ITransactionEntityRepository, EntryRepository>();
+            services.AddScoped<IDebitOrCreditRepository, DebitOrCreditRepository>();
+            services.AddScoped<ILedgerRepository, LedgerRepository>();
+            services.AddScoped<IVoucherRepository, VoucherRepository>();
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v3", new Microsoft.OpenApi.Models.OpenApiInfo
