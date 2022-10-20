@@ -30,3 +30,7 @@
 /media/bijay/a2f0e4f0-5adf-436e-9734-5e89ead378bc8/dotnet/TransactionEntry/bin/Debug/netcoreapp3.1/System.Runtime.CompilerServices.Unsafe.dll
 /media/bijay/a2f0e4f0-5adf-436e-9734-5e89ead378bc8/dotnet/TransactionEntry/obj/Debug/netcoreapp3.1/TransactionEntry.MvcApplicationPartsAssemblyInfo.cs
 /media/bijay/a2f0e4f0-5adf-436e-9734-5e89ead378bc8/dotnet/TransactionEntry/obj/Debug/netcoreapp3.1/TransactionEntry.csproj.CopyComplete
+/media/bijay/a2f0e4f0-5adf-436e-9734-5e89ead378bc8/dotnet/TransactionEntry/bin/Debug/netcoreapp3.1/Frontend/package-lock.json
+/media/bijay/a2f0e4f0-5adf-436e-9734-5e89ead378bc8/dotnet/TransactionEntry/bin/Debug/netcoreapp3.1/Frontend/tax-entry/package-lock.json
+/media/bijay/a2f0e4f0-5adf-436e-9734-5e89ead378bc8/dotnet/TransactionEntry/bin/Debug/netcoreapp3.1/Frontend/tax-entry/package.json
+/media/bijay/a2f0e4f0-5adf-436e-9734-5e89ead378bc8/dotnet/TransactionEntry/bin/Debug/netcoreapp3.1/Frontend/tax-entry/public/manifest.json

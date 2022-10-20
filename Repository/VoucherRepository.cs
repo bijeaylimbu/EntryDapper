@@ -30,7 +30,7 @@ namespace TransactionEntry.Repository
 
         public async Task<IReadOnlyList<VoucherResponse>> GetAllVoucher()
         {
-             var query = "SELECT NAME FROM tbl_voucher";
+             var query = "SELECT VOUCHER_ID, NAME FROM tbl_voucher";
             using (var connection = _context.Connection())
             {
                 var ledger = await connection.QueryAsync<VoucherResponse>(query);

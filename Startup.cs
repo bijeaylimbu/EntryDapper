@@ -56,7 +56,13 @@ namespace TransactionEntry
             app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v3/swagger.json", "Swagger file"));
-
+            app.UseCors(builder =>
+            {
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
             app.UseRouting();
 
             app.UseAuthorization();

@@ -8,7 +8,7 @@ using TransactionEntry.Application.Response;
 
 namespace TransactionEntry.Controllers
 {
-    [Microsoft.AspNetCore.Components.Route("api")]
+    [Route("api")]
     [ApiController]
     public class VoucherController
     {

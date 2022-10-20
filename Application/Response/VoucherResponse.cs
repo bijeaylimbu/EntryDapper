@@ -4,8 +4,7 @@ namespace TransactionEntry.Application.Response
 {
     public class VoucherResponse
     {
-        public int Id { get; set; }
+        public int Voucher_id { get; set; }
         public string Name { get; set; }
-        public ICollection<LedgerResponse> Ledger { get; set; }
     }
 }
