@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using TransactionEntry.Application.Interface;
 using TransactionEntry.Application.Request;
+using TransactionEntry.Controllers;
 using TransactionEntry.Infrastructure.Persistance;
 
 namespace TransactionEntry.Repository
@@ -60,6 +63,23 @@ namespace TransactionEntry.Repository
             {
                 throw new Exception(e.Message);
             }
+        }
+
+        public async Task<IReadOnlyList<EntryResponse>> getAllEntryByEntryId(int entryId)
+        {
+            var query = "SELECT * FROM tbl_entry WHERE entry_id= @entryId ";
+            using var connection=_context.Connection();
+            var entry = await connection.QueryAsync<EntryResponse>(query, new { entryId });
+            return entry.ToList();
+        }
+
+        public async Task<TotalAmountResponse> GetEntryTotalById(string id)
+        {
+            int entryId=Int32.Parse(id);
+            var query = "SELECT  SUM(DEBIT) AS DEBIT, SUM(CREDIT) AS CREDIT FROM tbl_entry WHERE entry_id= @entryId ";
+            using var connection=_context.Connection();
+            var entry = await connection.QueryFirstOrDefaultAsync<TotalAmountResponse>(query, new { entryId });
+            return entry;
         }
     }
 }

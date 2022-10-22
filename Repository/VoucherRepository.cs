@@ -18,13 +18,12 @@ namespace TransactionEntry.Repository
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        public async Task<IReadOnlyList<VoucherResponse>> GetVoucherByName(string name)
+        public async Task<VoucherResponse> GetVoucherId(int id)
         {
-            var query = "SELECT NAME FROM tbl_voucher WHERE NAME LIKE @NAME || '%'";
+            var query = "SELECT NAME FROM tbl_voucher WHERE VOUCHER_ID = @Id";
             using (var connection = _context.Connection())
             {
-                var ledger = await connection.QueryAsync<VoucherResponse>(query, new {NAME=name});
-                return ledger.ToList();
+                return await  connection.QueryFirstAsync<VoucherResponse>(query, new {Id=id});
             }
         }
 

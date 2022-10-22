@@ -6,7 +6,7 @@ namespace TransactionEntry.Application.Interface
 {
     public interface IVoucherRepository
     {
-        Task<IReadOnlyList<VoucherResponse>> GetVoucherByName(string name);
+        Task<VoucherResponse> GetVoucherId(int id);
 
         Task<IReadOnlyList<VoucherResponse>> GetAllVoucher();
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TransactionEntry.Application.Interface;
@@ -26,6 +27,20 @@ namespace TransactionEntry.Controllers
         public async Task<int> EnterCreditOrDebitAmount(DebitOrCreditRequest request)
         {
             var entry = await _repository.EnterDebitOrCredit(request);
+            return entry;
+        }
+
+        [HttpGet("all-entry/{id}")]
+        public async Task<IReadOnlyList<EntryResponse>> GetEntryByEntryId(int id)
+        {
+            var entry = await _repository.getAllEntryByEntryId(id);
+            return entry;
+        }
+
+        [HttpGet("get-entry-by-id/{id}")]
+        public async Task<TotalAmountResponse> GetEntryTotalById(string id)
+        {
+            var entry = await _repository.GetEntryTotalById(id);
             return entry;
         }
     }

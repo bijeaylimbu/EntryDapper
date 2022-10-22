@@ -5,7 +5,8 @@ namespace TransactionEntry.Application.Request
 {
     public class DebitOrCreditRequest
     {
-        public EntryType Type { get; set; }
+        public int Id { get; set; }
+        public string Type { get; set; }
         public string SubType { get; set; }
         public double Amount { get; set; }
         public DateTime EntryDate { get; set; }

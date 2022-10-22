@@ -19,11 +19,11 @@ namespace TransactionEntry.Controllers
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        [HttpGet("get-by-name/{name}")]
-        public async Task<IReadOnlyList<VoucherResponse>> GetByName(string name)
+        [HttpGet("get-by-id/{id}")]
+        public async Task<VoucherResponse> GetByName(int id)
         {
-            var voucher = await _repository.GetVoucherByName(name);
-            return voucher.ToList();
+            var voucher = await _repository.GetVoucherId(id);
+            return voucher;
         }
 
         [HttpGet("get-all-voucher")]

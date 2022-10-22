@@ -6,7 +6,7 @@ using TransactionEntry.Application.Request;
 
 namespace TransactionEntry.Controllers
 {
-    [Microsoft.AspNetCore.Components.Route(("api"))]
+    [Route(("api"))]
     [ApiController]
     public class AddDebitOrCredit
     {
