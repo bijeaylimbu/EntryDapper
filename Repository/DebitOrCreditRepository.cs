@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using TransactionEntry.Application.Interface;
 using TransactionEntry.Application.Request;
 using TransactionEntry.Infrastructure.Persistance;
@@ -31,7 +32,6 @@ namespace TransactionEntry.Repository
                     using (var connection = _context.Connection())
                     {
                         string result = await connection.ExecuteScalarAsync<string>(query, parameters);
-                        double total = 0.00;
                         if (result != null && request.Type.ToUpper()=="CREDIT")
                         {
                             var masterQuery =
@@ -42,32 +42,7 @@ namespace TransactionEntry.Repository
                             masterParameters.Add("CREDIT", request.Amount);
                             masterParameters.Add("ENTRY_ID", Int32.Parse(result) );
                             string masterEntry = await connection.ExecuteScalarAsync<string>(masterQuery, masterParameters);
-                            if (masterEntry != null)
-                            {
-                                total += request.Amount;
-                                int voucher_id = Int32.Parse(result);
-                                string findQuery = "SELECT * FROM tbl_transaction_entry WHERE voucher_id= @Voucher_Id";
-                                string tranData = await connection.QueryFirstOrDefaultAsync<string>(findQuery, new {voucher_id  });
-                                if (tranData != null)
-                                {
-                                    var tranQuery =
-                                        "INSERT INTO tbl_transaction_entry(VOUCHER_ID, TOTAL) VALUES (@VOUCHER_ID,@TOTAL) RETURNING voucher_id";
-                                    var tranParameters = new DynamicParameters();
-                                    tranParameters.Add("VOUCHER_ID", Int32.Parse(result));
-                                    tranParameters.Add("TOTAL", total);
-                                    string tranEntry = await connection.ExecuteScalarAsync<string>(tranQuery, tranParameters);
-                                    return voucher_id.ToString();
-                                }
-                                else
-                                {
-                                    var updateQuery =
-                                        "UPDATE tbl_transaction_entry SET TOTAL= @TOTAL WHERE voucher_id= @voucher_id ";
-                                    var updateParameter = new DynamicParameters();
-                                    updateParameter.Add("TOTAL", total);
-                                    await connection.ExecuteAsync(updateQuery, updateParameter);
-                                    return result;
-                                }
-                            }
+                            return masterEntry;
                         }
 
                         else if (result != null && request.Type.ToUpper()=="DEBIT")
@@ -80,35 +55,11 @@ namespace TransactionEntry.Repository
                             masterParameters.Add("CREDIT", null);
                             masterParameters.Add("ENTRY_ID", Int32.Parse(result));
                             string masterEntry = await connection.ExecuteScalarAsync<string>(masterQuery, masterParameters);
-                            if (masterEntry != null)
-                            {
-                                total += request.Amount;
-                                int voucher_id = Int32.Parse(result);
-                                string findQuery = "SELECT id FROM tbl_transaction_entry WHERE voucher_id= @VOUCHER_ID";
-                                string tranData = await connection.QueryFirstOrDefaultAsync<string>(findQuery, new {voucher_id  });
-                                if (tranData == null)
-                                {
-                                    var tranQuery =
-                                        "INSERT INTO tbl_transaction_entry(VOUCHER_ID, TOTAL) VALUES (@VOUCHER_ID,@TOTAL) RETURNING voucher_id";
-                                    var tranParameters = new DynamicParameters();
-                                    tranParameters.Add("VOUCHER_ID", Int32.Parse(result));
-                                    tranParameters.Add("TOTAL", total);
-                                    string tranEntry = await connection.ExecuteScalarAsync<string>(tranQuery, tranParameters);
-                                    return tranEntry;
-                                }
-
-                                var updateQuery =
-                                    "UPDATE tbl_transaction_entry SET TOTAL= @TOTAL WHERE voucher_id= @voucher_id ";
-                                var updateParameter = new DynamicParameters();
-                                updateParameter.Add("TOTAL", total);
-                                await connection.ExecuteAsync(updateQuery, updateParameter);
-                                return result;
-                            }
+                            return masterEntry;
                         }
                         throw new ArgumentNullException(nameof(result));
                     }     
                 }
-
                 using (var connection = _context.Connection())
                 {   int result=Int32.Parse(request.EntryId);
                     double total = 0.00;
@@ -122,32 +73,7 @@ namespace TransactionEntry.Repository
                         masterParameters.Add("CREDIT", request.Amount);
                         masterParameters.Add("ENTRY_ID", result );
                         string masterEntry = await connection.ExecuteScalarAsync<string>(masterQuery, masterParameters);
-                        if (masterEntry != null)
-                        {
-                            total += request.Amount;
-                            int voucher_id =result;
-                            string findQuery = "SELECT * FROM tbl_transaction_entry WHERE voucher_id= @Voucher_Id";
-                            string tranData = await connection.QueryFirstOrDefaultAsync<string>(findQuery, new {voucher_id  });
-                            if (tranData != null)
-                            {
-                                var tranQuery =
-                                    "INSERT INTO tbl_transaction_entry(VOUCHER_ID, TOTAL) VALUES (@VOUCHER_ID,@TOTAL) RETURNING voucher_id";
-                                var tranParameters = new DynamicParameters();
-                                tranParameters.Add("VOUCHER_ID", result);
-                                tranParameters.Add("TOTAL", total);
-                                string tranEntry = await connection.ExecuteScalarAsync<string>(tranQuery, tranParameters);
-                                return voucher_id.ToString();
-                            }
-                            else
-                            {
-                                var updateQuery =
-                                    "UPDATE tbl_transaction_entry SET TOTAL= @TOTAL WHERE voucher_id= @voucher_id ";
-                                var updateParameter = new DynamicParameters();
-                                updateParameter.Add("TOTAL", total);
-                                await connection.ExecuteAsync(updateQuery, updateParameter);
-                                return result.ToString();
-                            }
-                        }
+                        return masterEntry;
                     }
 
                     else if (result != null && request.Type.ToUpper()=="DEBIT")
@@ -160,40 +86,33 @@ namespace TransactionEntry.Repository
                         masterParameters.Add("CREDIT", null);
                         masterParameters.Add("ENTRY_ID", result);
                         string masterEntry = await connection.ExecuteScalarAsync<string>(masterQuery, masterParameters);
-                        if (masterEntry != null)
-                        {
-                            total += request.Amount;
-                            int voucher_id =result;
-                            string findQuery = "SELECT id FROM tbl_transaction_entry WHERE voucher_id= @VOUCHER_ID";
-                            string tranData = await connection.QueryFirstOrDefaultAsync<string>(findQuery, new {voucher_id  });
-                            if (tranData == null)
-                            {
-                                var tranQuery =
-                                    "INSERT INTO tbl_transaction_entry(VOUCHER_ID, TOTAL) VALUES (@VOUCHER_ID,@TOTAL) RETURNING voucher_id";
-                                var tranParameters = new DynamicParameters();
-                                tranParameters.Add("VOUCHER_ID", result);
-                                tranParameters.Add("TOTAL", total);
-                                string tranEntry = await connection.ExecuteScalarAsync<string>(tranQuery, tranParameters);
-                                return tranEntry;
-                            }
-
-                            var updateQuery =
-                                "UPDATE tbl_transaction_entry SET TOTAL= @TOTAL WHERE voucher_id= @voucher_id ";
-                            var updateParameter = new DynamicParameters();
-                            updateParameter.Add("TOTAL", total);
-                            await connection.ExecuteAsync(updateQuery, updateParameter);
-                            return result.ToString();
-                        }
+                        return masterEntry;
                     }
                     throw new ArgumentNullException(nameof(result));
                 }
-
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
            
+        }
+
+        public async Task<string> AddFinalTransaction(FinalTransaction request)
+        {
+            if (request.CreditTotalAmount.Equals( request.DebitTotalAmount))
+            {
+                var tranQuery =
+                    "INSERT INTO tbl_transaction_entry(VOUCHER_ID, TOTAL) VALUES (@VOUCHER_ID,@TOTAL) RETURNING voucher_id";
+                var tranParameters = new DynamicParameters();
+                tranParameters.Add("VOUCHER_ID", Int32.Parse(request.VoucherId));
+                tranParameters.Add("TOTAL", request.CreditTotalAmount+ request.DebitTotalAmount);
+                using var connection = _context.Connection();
+                var tranEntry = await connection.ExecuteScalarAsync<string>(tranQuery, tranParameters);
+                return tranEntry;
+            }
+
+            return "debit and credit amount doesn't match";
         }
     }
 }

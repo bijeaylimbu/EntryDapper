@@ -6,5 +6,7 @@ namespace TransactionEntry.Application.Interface
     public interface IDebitOrCreditRepository
     {
         Task<string> AddDebitOrCreditAmount(AmountRequest request);
+        
+        Task<string> AddFinalTransaction(FinalTransaction request);
     };
 }

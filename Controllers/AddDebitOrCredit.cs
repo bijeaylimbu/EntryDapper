@@ -23,5 +23,12 @@ namespace TransactionEntry.Controllers
                 var addAmount = await _repository.AddDebitOrCreditAmount(request);
                 return  addAmount;
         }
+
+        [HttpPost("add-tran-entry")]
+        public async Task<string> AddTransactionEntry(FinalTransaction finalTransaction)
+        {
+            var entry = await _repository.AddFinalTransaction(finalTransaction);
+            return entry;
+        }
     }
 }
