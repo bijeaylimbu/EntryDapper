@@ -30,5 +30,12 @@ namespace TransactionEntry.Controllers
             var entry = await _repository.AddFinalTransaction(finalTransaction);
             return entry;
         }
+
+        [HttpPut("update-entry/{id}")]
+        public async Task<int> UpdateEntry(DebitOrCreditRequest request, int id)
+        {
+            var update = await _repository.UpdateEntry(request, id);
+            return update;
+        }
     }
 }

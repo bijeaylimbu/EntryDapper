@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Dapper;
-using Microsoft.AspNetCore.Mvc;
 using TransactionEntry.Application.Interface;
 using TransactionEntry.Application.Request;
 using TransactionEntry.Infrastructure.Persistance;
@@ -38,7 +37,7 @@ namespace TransactionEntry.Repository
                                 "INSERT INTO tbl_entry(LEDGER, DEBIT, CREDIT, ENTRY_ID) VALUES (@LEDGER,@DEBIT, @CREDIT, @ENTRY_ID) RETURNING entry_id";
                             var masterParameters = new DynamicParameters();
                             masterParameters.Add("LEDGER", request.SubType);
-                            masterParameters.Add("DEBIT", null);
+                            masterParameters.Add("DEBIT", 0);
                             masterParameters.Add("CREDIT", request.Amount);
                             masterParameters.Add("ENTRY_ID", Int32.Parse(result) );
                             string masterEntry = await connection.ExecuteScalarAsync<string>(masterQuery, masterParameters);
@@ -52,7 +51,7 @@ namespace TransactionEntry.Repository
                             var masterParameters = new DynamicParameters();
                             masterParameters.Add("LEDGER", request.SubType);
                             masterParameters.Add("DEBIT", request.Amount);
-                            masterParameters.Add("CREDIT", null);
+                            masterParameters.Add("CREDIT", 0);
                             masterParameters.Add("ENTRY_ID", Int32.Parse(result));
                             string masterEntry = await connection.ExecuteScalarAsync<string>(masterQuery, masterParameters);
                             return masterEntry;
@@ -69,7 +68,7 @@ namespace TransactionEntry.Repository
                             "INSERT INTO tbl_entry(LEDGER, DEBIT, CREDIT, ENTRY_ID) VALUES (@LEDGER,@DEBIT, @CREDIT, @ENTRY_ID) RETURNING entry_id";
                         var masterParameters = new DynamicParameters();
                         masterParameters.Add("LEDGER", request.SubType);
-                        masterParameters.Add("DEBIT", null);
+                        masterParameters.Add("DEBIT", 0);
                         masterParameters.Add("CREDIT", request.Amount);
                         masterParameters.Add("ENTRY_ID", result );
                         string masterEntry = await connection.ExecuteScalarAsync<string>(masterQuery, masterParameters);
@@ -83,7 +82,7 @@ namespace TransactionEntry.Repository
                         var masterParameters = new DynamicParameters();
                         masterParameters.Add("LEDGER", request.SubType);
                         masterParameters.Add("DEBIT", request.Amount);
-                        masterParameters.Add("CREDIT", null);
+                        masterParameters.Add("CREDIT", 0);
                         masterParameters.Add("ENTRY_ID", result);
                         string masterEntry = await connection.ExecuteScalarAsync<string>(masterQuery, masterParameters);
                         return masterEntry;
@@ -113,6 +112,36 @@ namespace TransactionEntry.Repository
             }
 
             return "debit and credit amount doesn't match";
+        }
+
+        public async Task<int> UpdateEntry(DebitOrCreditRequest request, int id)
+        {
+            var query =
+                    "UPDATE tbl_entry SET LEDGER = @SUB_TYPE, DEBIT = @DEBIT, CREDIT = @CREDIT WHERE id  = @id ";
+                if (request.Type.ToUpper() == "CREDIT")
+                {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("SUB_TYPE", request.SubType);
+                    parameters.Add("DEBIT", 0);
+                    parameters.Add("CREDIT",   request.Amount);
+                    using (var connection = _context.Connection())
+                    {
+                        var result= await connection.ExecuteAsync(query, parameters);
+                        return result;
+                    }   
+                }
+                else
+                {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("SUB_TYPE", request.SubType);
+                    parameters.Add("DEBIT", request.Amount);
+                    parameters.Add("CREDIT", 0);
+                    using (var connection = _context.Connection())
+                    {
+                        var result= await connection.ExecuteAsync(query, parameters);
+                        return result;
+                    }   
+                }
         }
     }
 }
